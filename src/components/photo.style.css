@@ -1,0 +1,43 @@
+figure {
+    flex-basis: calc(33.333% - 4rem);
+    border: 1px solid #d3d3d3;
+    flex-grow: 1;
+}
+
+.photo {
+    width: 100%;
+    height: auto;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2rem;
+}
+
+.photo-buttons {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.remove-btn {
+    border: none;
+    padding: 10px;
+    font-size: 1.4rem;
+    width: 100px;
+    background-color: darkred;
+    color: #fff;
+}
+
+.remove-btn:hover {
+    cursor: pointer;
+    background-color: red;
+    font-weight: 600;
+}
+
+figure p {
+    text-align: center;
+    font-size: 1.2rem;
+    color: grey;
+}
