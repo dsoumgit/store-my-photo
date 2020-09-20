@@ -1,0 +1,39 @@
+.figure .single-photo {
+	flex-basis: calc(33.333% - 4rem);
+	flex-grow: 1;
+	flex-shrink: 0;
+	margin: 0 2rem 2rem 2rem;
+	padding: 2rem;
+	border: 1px solid #d3d3d3;
+	background: #fff;
+	position: relative;
+}
+
+
+.single-photo {
+	max-width: 1000px;
+	margin: 0 auto;
+	display: flex;
+	background: #fff;
+	border: black;
+}
+
+
+.single-photo .figure {
+	box-shadow: none;
+	margin: 0 2rem 0 0;
+	border: 0;
+	padding: 0;
+	flex: 1 0 60%;
+	max-width: 60%;
+}
+
+.single-photo .comments {
+	flex: 1 0 40%;
+	max-width: 40%;
+}
+
+.single-photo .photo {
+	width: 100%;
+	margin: 0;
+}

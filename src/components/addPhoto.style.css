@@ -8,8 +8,6 @@
 }
 
 .addPhoto-form {
-    background-color: rgb(97, 197, 243);
-    border: 1px solid grey;
     width: 40vw;
     margin: 0 auto 5rem auto;
     padding: 20px;
@@ -19,6 +17,7 @@
 
 .label {
     font-size: 2rem;
+    font-weight: 400;
 }
 
 input[type="text"] {
@@ -28,6 +27,10 @@ input[type="text"] {
     margin-top: 10px;
     margin-bottom: 20px;
     border: 1px solid lightgray;
+}
+
+::placeholder {
+    font-style: italic;
 }
 
 .textInput {
@@ -49,4 +52,10 @@ input[type="button"]:hover,
 input[type="submit"]:hover {
     cursor: pointer;
     transform: scale(1.1);
+}
+
+.upload-btn {
+    margin-bottom: 20px;
+    padding: 5px;
+    font-size: 1.2rem;
 }

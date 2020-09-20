@@ -1,90 +1,138 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
+
+import { firestore, convertPostsToMap } from './firebase/firebase.util';
 import PhotoContainer from './components/photoContainer';
 import AddPhoto from './components/addPhoto';
+import SinglePhoto from './components/singlePhoto';
 import NotFound from './components/notFound';
-
-function fetchDatabase() {
-  return [
-    {
-      id: 1,
-      description: "Beautiful landscape",
-      imageLink: "https://cdn.pixabay.com/photo/2019/12/20/23/07/landscape-4709500_960_720.jpg",
-      postedDate: "02/09/2019"
-    },
-    {
-      id: 2,
-      description: "Incredible galaxy",
-      imageLink: "https://cdn.pixabay.com/photo/2012/08/25/22/22/space-54999_960_720.jpg",
-      postedDate: "10/20/2019"
-    },
-    {
-      id: 3,
-      description: "Romantic couple",
-      imageLink: "https://cdn.pixabay.com/photo/2014/12/08/11/49/love-560783_960_720.jpg",
-      postedDate: "01/19/2020"
-    }
-  ]
-}
+import { connect } from 'react-redux';
+//import { loadPosts } from './redux/actions/actions';
+import { loadPosts } from './redux/actions/postsActions';
 
 class App extends Component {
   constructor() {
     super();
-
     this.state = {
-      posts: []
+      isLoading: true
     }
   }
 
   componentDidMount() {
-    const data = fetchDatabase();
+    const { loadPosts } = this.props;
+    
+    const posts = firestore.collection('posts');
 
-    this.setState({
-      posts: data
-    })
-  }
-
-  // create on remove photo function and pass it as a prop
-  onRemovePhoto = (postRemoved) => {
-    // filter the state and update it 
-    this.setState((state) => ({
-      posts: state.posts.filter(post => post !== postRemoved)
-    }))
-  }
-
-  onAddPhoto = (postSubmitted) => {
-    console.log(postSubmitted);
-    this.setState(state => ({
-      posts: state.posts.concat([postSubmitted])
-    }));
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    console.log(prevState.posts);
-    console.log(this.state);
+    posts.onSnapshot(async snapshot => {
+      const postsMap = convertPostsToMap(snapshot);
+      loadPosts(postsMap);
+      
+      this.setState({
+        isLoading: false
+      })
+    });
   }
 
   render() {
+
+    const { posts } = this.props;
+    
+    const { isLoading } = this.state;
+
     return (
       <div className="App">
-
+        <header>
+          <h1>Photowall</h1>
+        </header>
         <Switch>
-          <Route exact path="/" render={() => (
-            <PhotoContainer posts={this.state.posts} onRemovePhoto={this.onRemovePhoto} />
+          <Route exact path="/" render={() => 
+          isLoading ? <div className="loading">Loading<span>...</span></div>
+          : (
+            <PhotoContainer {...posts} /> 
           )} />
-
-          <Route path="/addPhoto" render={({ history }) => (
-            <AddPhoto onAddPhoto={(addedPost) => {
-                this.onAddPhoto(addedPost)
-                history.push("/")
-            }} />
+          <Route path="/addPhoto" render={() => (
+            <AddPhoto {...posts} />
+          )} />
+          <Route path="/single/:id" render={(params) => (
+            <SinglePhoto {...params} />
           )} />
           <Route path="*" exact={true} component={NotFound} />
         </Switch>
       </div>
     )
   }
+
 }
 
-export default App;
+const mapStateToProps = state => ({
+  posts: state
+})
+
+const mapDispatchToProps = dispatch => ({
+  loadPosts: postsMap => dispatch(loadPosts(postsMap))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+
+// const App = (props) => {
+
+//   // firestore.collection("cities").doc("LA").set({
+//   //   name: "Los Angeles",
+//   //   state: "CA",
+//   //   country: "USA"
+//   // })
+//   //   .then(() => {
+//   //     console.log("Document successfully written...!");
+//   //   })
+//   //   .catch(error => {
+//   //     console.error("Error writing document: ", error);
+//   //   });
+
+
+//   //addPostsCollection("posts", props.posts.map(({ imageLink, description }) => ({ imageLink, description} )));
+//   const posts = firestore.collection('posts');
+//   //console.log(posts);
+//   //console.log(props);
+
+//    posts.onSnapshot(async snapshot => {
+//     const postsMap =  convertPostsToMap(snapshot);
+//     props.loadPosts(postsMap);
+
+//   //  console.log(postsMap);  
+//   //   snapshot.docs.map(doc => {
+//   //     console.log(doc.data());
+//   //   })
+//    });
+
+//    console.log(props);
+
+//   return (
+//     <div className="App">
+//       <header>
+//         <h1>Photowall</h1>
+//       </header>
+//       <Switch>
+//         <Route exact path="/" render={() => (
+//           <PhotoContainer {...props} />
+//         )} />
+//         <Route path="/addPhoto" component={AddPhoto} />
+//         <Route path="/single/:id" render={(params) => (
+//           <SinglePhoto {...props} {...params} />
+//         )} />
+//         <Route path="*" exact={true} component={NotFound} />
+//       </Switch>
+//     </div>
+//   )
+// }
+
+// const mapStateToProps = state => ({
+//   posts: state
+// })
+
+// const mapDispatchToProps = dispatch => ({
+//   loadPosts: postsMap => dispatch(loadPosts(postsMap))
+// })
+
+// export default connect(mapStateToProps, mapDispatchToProps)(App);

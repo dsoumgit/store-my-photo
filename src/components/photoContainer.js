@@ -4,35 +4,49 @@ import { Link } from 'react-router-dom';
 import Photo from './photo';
 import Proptypes from 'prop-types';
 
+// const PhotoContainer = (props) => {
+//     console.log(props);
+//     return (
+//         <React.Fragment>
+            
+//             <Link to="/addPhoto" className="addIcon"></Link>
+//             <div className="photoGrid">
+//                 {
+//                     props.posts
+//                         .sort((a, b) => {
+//                             return b.id - a.id;
+//                         })
+//                         .map((post, index) => {
+//                             return (
+//                                 <Photo key={post.id} post={post} {...props} index={index} />
+//                             )
+//                         })
+//                 }
+//             </div>
+//         </React.Fragment>
+//     )
+// }
+
 const PhotoContainer = (props) => {
 
-    return (
+    return(
         <React.Fragment>
-            <header>
-                <h1>Photowall</h1>
-            </header>
             <Link to="/addPhoto" className="addIcon"></Link>
             <div className="photoGrid">
                 {
-                    props.posts
-                        .sort(function(a, b) {
-                            return b.id - a.id;
-                        })
-                        .map(post => {
-                            return (
-                                <Photo key={post.id} post={post} onRemovePhoto={props.onRemovePhoto} />
-                            )
-                        })
+                    props.posts.map((post, indx) => {
+                        return <Photo key={post.id} post={post} index={indx} />
+                    })
                 }
             </div>
         </React.Fragment>
     )
 }
 
+
 // make sure to pass the right type 
 PhotoContainer.propTypes = {
-    posts: Proptypes.array.isRequired,
-    onRemovePhoto: Proptypes.func.isRequired
+    posts: Proptypes.array.isRequired
 }
 
 export default PhotoContainer;

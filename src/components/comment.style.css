@@ -1,0 +1,31 @@
+.comment{
+    width: 30%;
+    margin: 1rem 2rem;
+}
+.comment p {
+	border-bottom: 1px solid #d3d3d3;
+	padding: 0.5rem 0;
+}
+
+.comment-input {
+    width: 200px;
+}
+
+.comment-form textarea {
+    width: 260px;
+    height: 200px;
+	font-size: 1.3rem;
+    border: 1px solid lightgray;
+    resize: none;
+    padding-top: 20px;
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+textarea::placeholder {
+    font-style: italic;
+}
+
+.submit-btn {
+    background-color: initial;
+}

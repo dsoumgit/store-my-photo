@@ -1,50 +1,19 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import './addPhoto.style.css';
-
-// class AddPhoto extends Component {
-//     constructor() {
-//         super();
-//     }
-
-//     onSubmit = (evt) => {
-
-//     }
-
-//     render() {
-//         return(
-//             <div className="add-photo">
-//             <h1>Add Photo</h1>
-//             <div className="addPhoto-form">
-//                 <form onSubmit={this.onSubmit}>
-//                     <label htmlFor="Link" className="label">Link</label>
-//                     <input type="text" placeholder="eg. https://cdn.pixabay.com/photo/2012/08/25/22/22/space-54999_960_720.jpg"></input>
-//                     <label htmlFor="Description" className="label">Description</label>
-//                     <input type="text" placeholder="description..."></input>
-//                     <div className="addPhoto-buttons">
-//                         <input type="submit" value="Submit" />
-//                         <input type="button" value="Cancel" />
-//                     </div>
-//                 </form>
-//             </div>
-//         </div>
-//         )
-//     }
-// }
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+//import { addPost } from '../redux/actions/actions';
+import { firestore } from '../firebase/firebase.util';
+import { addPost } from '../redux/actions/postsActions';
 
 const AddPhoto = (props) => {
 
     const [ link, setLink ] = useState('url goes here...');
     const [ description, setDescription ] = useState('description...');
 
-    function onLinkChange(evt) {
-        setLink(evt.target.value);
-    }
-
-    function onDescriptionChange(evt) {
-        setDescription(evt.target.value);
-    }
-
-    function onPostSubmit(evt) {
+    const { posts, addPost } = props;
+    
+    const onPostSubmit = (evt) => {
         evt.preventDefault();
 
         const link = evt.target.elements.link.value;
@@ -54,11 +23,14 @@ const AddPhoto = (props) => {
             const post = {
                 id: Number(new Date),   // store as numeric 
                 imageLink: link,
-                description: description,
-                postedDate: new Date().toLocaleString()
+                description: description
+            //    postedDate: new Date().toLocaleString()
             }
-    
-            props.onAddPhoto(post);
+            
+            // dispatch 
+            addPost(post);
+            // route to home page
+            props.history.push("/");
         } else {
             alert("Input is required.");
         }
@@ -66,56 +38,46 @@ const AddPhoto = (props) => {
 
     return (
         <div className="add-photo">
-            <h1>Add Photo</h1>
+            {/* <h1>Add Photo</h1> */}
             <div className="addPhoto-form">
                 <form onSubmit={onPostSubmit}>
-                    <label htmlFor="Link" className="label">Link</label>
+                    <label htmlFor="link" className="label">Link:</label>
                     <input 
                         type="text" 
                         name="link"
                         placeholder={link}
-                        onChange={onLinkChange}
+                        onChange={evt => setLink(evt.target.value)}
                         className="textInput"></input>
-                    <label htmlFor="Description" className="label">Description</label>
+                    <label htmlFor="description" className="label">Description:</label>
                     <input 
                         type="text" 
                         name="description"
                         placeholder={description}
-                        onChange={onDescriptionChange}
+                        onChange={evt => setDescription(evt.target.value)}
                         className="textInput"></input>
                     <div className="addPhoto-buttons">
-                        <input type="submit" value="Submit" />
-                        <input type="button" value="Cancel" />
+                        <button className="upload-btn">Browse</button>
                     </div>
+
+                    <input type="submit" value="Submit" />
+                        <input type="button" value="Cancel" onClick={() => props.history.push("/")} />
                 </form>
             </div>
         </div>
     )
 }
 
-// const AddPhoto = () => {
+const mapToStateProps = state => {
+    return {
+        posts: state
+    }
+}
 
-//     const onSubmit = (evt) => {
-//         console.log(evt);
-//     }
+const mapDispatchToProps = dispatch => {
+    return{
+        addPost: (post) => dispatch(addPost(post))
+    }
+}
 
-//     return (
-//         <div className="add-photo">
-//             <h1>Add Photo</h1>
-//             <div className="addPhoto-form">
-//                 <form onSubmit={onSubmit}>
-//                     <label htmlFor="Link" className="label">Link</label>
-//                     <input type="text" placeholder="eg. https://cdn.pixabay.com/photo/2012/08/25/22/22/space-54999_960_720.jpg"></input>
-//                     <label htmlFor="Description" className="label">Description</label>
-//                     <input type="text" placeholder="description..."></input>
-//                     <div className="addPhoto-buttons">
-//                         <input type="button" value="Submit" />
-//                         <input type="button" value="Cancel" />
-//                     </div>
-//                 </form>
-//             </div>
-//         </div>
-//     )
-// }
+export default withRouter(connect(mapToStateProps, mapDispatchToProps)(AddPhoto));
 
-export default AddPhoto;
