@@ -1,54 +1,39 @@
 import React, { Component } from 'react';
 import './photo.style.css';
+import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { removePost } from '../redux/actions/postsActions';
-
-// const Photo = (props) => {
-
-//     const post = props.post;
-
-//     return (
-//         <figure>
-//             <Link to={`/single/${post.id}`}>
-//                 <img src={post.imageLink} alt={post.description} className="photo" />
-//             </Link>
-
-//             <div className="photo-content">
-//                 <h2>{post.description}</h2>
-//                 <div className="photo-buttons">
-//                     <button type="button" className="remove-btn" onClick={() => {
-//                         props.removeDBPost(props.index, post.id)
-//                     }}>Remove</button>
-//                 </div>
-//                 <p>{`Posted: ${post.postedDate}`}</p>
-//             </div>
-//         </figure>
-//     )
-// }
-
+import { removePost, removePhotoPost, loadPosts } from '../redux/actions/postsActions';
+import { firestore, convertPostsToMap } from '../firebase/firebase.util';
 
 class Photo extends Component {
     constructor() {
         super();
     }
 
+    onRemovePhoto = (postId) => {
+        
+        const { removePhotoPost } = this.props; 
+
+        removePhotoPost(postId);
+
+        this.props.history.push("/");
+    }
+
     render() {
-        const { post, index, removePost } = this.props; 
+      //  console.log(this.props);
+        const { post, index, history, removePost } = this.props; 
         
         return (
             <figure>
                 <Link to={`/single/${post.id}`}>
                     <img src={post.imageLink} alt={post.description} className="photo" />
                 </Link>
-
                 <div className="photo-content">
                     <h2>{post.description}</h2>
                     <div className="photo-buttons">
-                        <button type="button" className="remove-btn" onClick={() => {
-                            removePost(post.id)
-                        }}>Remove</button>
+                        <button type="button" className="remove-btn" onClick={() => this.onRemovePhoto(post.id)} >Remove</button>
                     </div>
                     <p>{`Posted: ${post.postedDate}`}</p>
                 </div>
@@ -61,10 +46,16 @@ Photo.propTypes = {
     post: PropTypes.object.isRequired
 }
 
-const mapDispatchToProps = dispatch => {
+const mapStateToProps = state => {
     return {
-        removePost: id => dispatch(removePost(id))
+        posts: state
     }
 }
 
-export default connect(null, mapDispatchToProps)(Photo);
+const mapDispatchToProps = dispatch => {
+    return {
+        removePhotoPost: postId => dispatch(removePhotoPost(postId))
+    }
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(Photo));

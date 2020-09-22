@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
 
@@ -21,13 +21,14 @@ class App extends Component {
 
   componentDidMount() {
     const { loadPosts } = this.props;
-    
+
     const posts = firestore.collection('posts');
 
     posts.onSnapshot(async snapshot => {
       const postsMap = convertPostsToMap(snapshot);
-      loadPosts(postsMap);
       
+      loadPosts(postsMap);
+
       this.setState({
         isLoading: false
       })
@@ -35,22 +36,20 @@ class App extends Component {
   }
 
   render() {
-
     const { posts } = this.props;
-    
     const { isLoading } = this.state;
 
     return (
-      <div className="App">
+      <React.Fragment>
         <header>
           <h1>Photowall</h1>
         </header>
         <Switch>
-          <Route exact path="/" render={() => 
-          isLoading ? <div className="loading">Loading<span>...</span></div>
-          : (
-            <PhotoContainer {...posts} /> 
-          )} />
+          <Route exact path="/" render={() =>
+            isLoading ? <div className="loading">Loading<span>...</span></div>
+              : (
+                <PhotoContainer {...posts } />
+              )} />
           <Route path="/addPhoto" render={() => (
             <AddPhoto {...posts} />
           )} />
@@ -59,11 +58,57 @@ class App extends Component {
           )} />
           <Route path="*" exact={true} component={NotFound} />
         </Switch>
-      </div>
+        <footer>
+          <div className="footer">
+            Copyright &#169; {new Date().getFullYear()} by Dara Soumgit. All rights reserved.
+                </div>
+        </footer>
+      </React.Fragment>
     )
   }
-
 }
+
+// const App = (props) => {
+
+//   const [loading, setLoading] = useState(true);
+
+//   const { loadPosts, posts } = props;
+
+//   useEffect(() => {
+//     const posts = firestore.collection('posts');
+
+//     posts.onSnapshot(async snapshot => {
+//       const postsMap = convertPostsToMap(snapshot);
+//       // call dispatch event 
+//       loadPosts(postsMap);   
+//       // set state 
+//       setLoading(false);
+//     });
+
+//   });
+
+//   return (
+//     <div className="App">
+//       <header>
+//         <h1>Photowall</h1>
+//       </header>
+//       <Switch>
+//         <Route exact path="/" render={() =>
+//           loading ? <div className="loading">Loading<span>...</span></div>
+//             : (
+//               <PhotoContainer {...posts} />
+//             )} />
+//         <Route path="/addPhoto" render={() => (
+//           <AddPhoto {...posts} />
+//         )} />
+//         <Route path="/single/:id" render={(params) => (
+//           <SinglePhoto {...params} />
+//         )} />
+//         <Route path="*" exact={true} component={NotFound} />
+//       </Switch>
+//     </div>
+//   )
+// }
 
 const mapStateToProps = state => ({
   posts: state
@@ -91,7 +136,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
 //   //   });
 
 
-//   //addPostsCollection("posts", props.posts.map(({ imageLink, description }) => ({ imageLink, description} )));
 //   const posts = firestore.collection('posts');
 //   //console.log(posts);
 //   //console.log(props);

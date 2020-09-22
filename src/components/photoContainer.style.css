@@ -1,27 +1,73 @@
-
 .photoGrid {
-    max-width: 1000px;
-    margin: 0 auto;
-    display: flex;  
-    flex-wrap: wrap; 
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .addIcon {
-    display: table;
-    margin: 10px auto;
-    padding: 30px;
-    background: url("https://www.flaticon.com/svg/static/icons/svg/1828/1828817.svg") center no-repeat;
-    background-size: contain;
-    border: none;
+  display: table;
+  margin: 10px auto;
+  padding: 30px;
+  background: url('https://www.flaticon.com/svg/static/icons/svg/1828/1828817.svg')
+    center no-repeat;
+  background-size: contain;
+  border: none;
 }
 
 .addIcon:hover {
-    cursor: pointer;
-    transform: scale(1.1);
+  cursor: pointer;
+  transform: scale(1.1);
 }
 
 @media only screen and (max-width: 800px) {
-    .photoGrid {
-        flex-direction: column; 
-    }
+  .photoGrid {
+    flex-direction: column;
+  }
+}
+
+.pagination-container {
+    width: 80vw;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination {
+  display: flex;
+  list-style: none;
+  outline: none;
+}
+.pagination > .active > a {
+  background-color: #47ccde;
+  border-color: #47ccde;
+  color: #fff;
+}
+.pagination > li > a {
+  border: 1px solid darkgray;
+  padding: 5px 10px;
+  outline: none;
+  cursor: pointer;
+}
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  background-color: #4119f7;
+  border-color: #3e13fd;
+  outline: none;
+}
+.pagination > li > a,
+.pagination > li > span {
+  color: darkblue;
+  font-size: 1rem;
+}
+.pagination > li:first-child > a,
+.pagination > li:first-child > span,
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+  border-radius: unset;
 }

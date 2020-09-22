@@ -18,9 +18,12 @@ const postsReducer = (state = INITIAL_STATE, action) => {
             // }
         case "ADD_POST": 
             return [...state, action.payload];
-        case "REMOVE_POST":
-            return state.slice().filter(item=>item.id !== action.payload);
-            
+        case "REMOVE_POST": 
+            // const filteredArr = state.filter(item => {
+            //     item.id !== action.payload;
+            // });
+            return [...state.slice(0, action.payload), ...state.slice(action.payload)];
+          
         default: 
             return state; 
     }

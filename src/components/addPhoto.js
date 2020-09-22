@@ -8,11 +8,11 @@ import { addPost } from '../redux/actions/postsActions';
 
 const AddPhoto = (props) => {
 
-    const [ link, setLink ] = useState('url goes here...');
-    const [ description, setDescription ] = useState('description...');
+    const [link, setLink] = useState('url goes here...');
+    const [description, setDescription] = useState('description...');
 
     const { posts, addPost } = props;
-    
+
     const onPostSubmit = (evt) => {
         evt.preventDefault();
 
@@ -24,9 +24,25 @@ const AddPhoto = (props) => {
                 id: Number(new Date),   // store as numeric 
                 imageLink: link,
                 description: description
-            //    postedDate: new Date().toLocaleString()
+                //  postedDate: new Date().toLocaleString()
             }
-            
+
+            // add to the database 
+            const postRef = firestore.collection('posts');
+            postRef.add({
+                id: Number(new Date),   // store as numeric 
+                imageLink: link,
+                description: description,
+                postedDate: new Date().toLocaleString(),
+                test: "01/01/2020"
+            })
+                .then(docRef => {
+                    console.log(docRef.id);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+
             // dispatch 
             addPost(post);
             // route to home page
@@ -42,15 +58,15 @@ const AddPhoto = (props) => {
             <div className="addPhoto-form">
                 <form onSubmit={onPostSubmit}>
                     <label htmlFor="link" className="label">Link:</label>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         name="link"
                         placeholder={link}
                         onChange={evt => setLink(evt.target.value)}
                         className="textInput"></input>
                     <label htmlFor="description" className="label">Description:</label>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         name="description"
                         placeholder={description}
                         onChange={evt => setDescription(evt.target.value)}
@@ -60,7 +76,7 @@ const AddPhoto = (props) => {
                     </div>
 
                     <input type="submit" value="Submit" />
-                        <input type="button" value="Cancel" onClick={() => props.history.push("/")} />
+                    <input type="button" value="Cancel" onClick={() => props.history.push("/")} />
                 </form>
             </div>
         </div>
@@ -74,7 +90,7 @@ const mapToStateProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-    return{
+    return {
         addPost: (post) => dispatch(addPost(post))
     }
 }
