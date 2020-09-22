@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
-import './App.css';
+//import './App.css';
+import { H1Style, SpinnerStyle, SpinnerSpan, FooterContainer, FooterStyle } from './App.style';
 import { Route, Switch } from 'react-router-dom';
 
 import { firestore, convertPostsToMap } from './firebase/firebase.util';
@@ -42,11 +43,11 @@ class App extends Component {
     return (
       <React.Fragment>
         <header>
-          <h1>Photowall</h1>
+          <H1Style>Photowall</H1Style>
         </header>
         <Switch>
           <Route exact path="/" render={() =>
-            isLoading ? <div className="loading">Loading<span>...</span></div>
+            isLoading ? <SpinnerStyle>Loading<SpinnerSpan>...</SpinnerSpan></SpinnerStyle>
               : (
                 <PhotoContainer {...posts } />
               )} />
@@ -58,11 +59,11 @@ class App extends Component {
           )} />
           <Route path="*" exact={true} component={NotFound} />
         </Switch>
-        <footer>
-          <div className="footer">
+        <FooterContainer>
+          <FooterStyle>
             Copyright &#169; {new Date().getFullYear()} by Dara Soumgit. All rights reserved.
-                </div>
-        </footer>
+                </FooterStyle>
+        </FooterContainer>
       </React.Fragment>
     )
   }

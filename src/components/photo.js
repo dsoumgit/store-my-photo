@@ -35,7 +35,7 @@ class Photo extends Component {
                     <div className="photo-buttons">
                         <button type="button" className="remove-btn" onClick={() => this.onRemovePhoto(post.id)} >Remove</button>
                     </div>
-                    <p>{`Posted: ${post.postedDate}`}</p>
+                    <p>{post.postedDate}</p>
                 </div>
             </figure>
         )

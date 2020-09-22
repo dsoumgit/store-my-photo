@@ -16,7 +16,7 @@
 }
 
 .label {
-    font-size: 2rem;
+    font-size: 1.4rem;
     font-weight: 400;
 }
 
@@ -34,14 +34,15 @@ input[type="text"] {
 }
 
 .textInput {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: rgb(22, 22, 22);
     padding: 5px;
 }
 
 input[type="button"], input[type="submit"] {
     border: none;
-    font-size: 1.6rem;
+    width: 120px;
+    font-size: 1.2rem;
     padding: 10px;
     margin-right: 20px;
     color: #fff;
@@ -57,5 +58,5 @@ input[type="submit"]:hover {
 .upload-btn {
     margin-bottom: 20px;
     padding: 5px;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
