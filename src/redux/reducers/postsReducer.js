@@ -19,10 +19,13 @@ const postsReducer = (state = INITIAL_STATE, action) => {
         case "ADD_POST": 
             return [...state, action.payload];
         case "REMOVE_POST": 
+            console.log('Reducer REMOVE_POST', action.payload, state);
             // const filteredArr = state.filter(item => {
-            //     item.id !== action.payload;
+            //     return item.id !== action.payload;
             // });
-            return [...state.slice(0, action.payload), ...state.slice(action.payload)];
+            //console.log([...state.slice(0, action.payload), ...state.slice(action.payload)]);
+            //return [...state.slice(0, action.payload), ...state.slice(action.payload)];
+            return state.filter(item => item.id !== action.payload);
           
         default: 
             return state; 

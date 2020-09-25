@@ -4,35 +4,38 @@ import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
 import Photo from './photo';
 import Proptypes from 'prop-types';
+import { connect } from 'react-redux';
+import { setPosts } from '../redux/actions/postsActions';
 
 class PhotoContainer extends Component {
     constructor() {
         super();
         this.state = {
             offset: 0,
-            data: [],
             elements: [],
             perPage: 5,
+            pageCount: 0,
             currentPage: 0
         }
     }
 
-    receivedData() {
-        const { posts } = this.props;
+    receivedData = () => {
+        const { posts } = this.props.posts;
         const slice = posts.slice(this.state.offset, this.state.offset + this.state.perPage);
-
-        const postData = slice.map((post, index) => {
+        
+        // sort by date 
+        const sortDate = slice.sort((a, b) => {
+            return b.id - a.id;
+        });
+    //    console.log(sortDate);
+        sortDate.map((post, index) => {
             return (<Photo key={index} post={post} index={index} {...this.props} />)
         });
-
+        
+        const pageCount =  Math.ceil(posts.length / this.state.perPage);
         this.setState({
-            pageCount: Math.ceil(posts.length / this.state.perPage),
-            postData
+            pageCount
         })
-    }
-
-    componentDidMount() {
-        this.receivedData();
     }
 
     handlePageClick = (evt) => {
@@ -47,13 +50,31 @@ class PhotoContainer extends Component {
         });
     }
 
+    
     render() {
-
+        
+        const { posts } = this.props.posts;
+        const slice = posts.slice(this.state.offset, this.state.offset + this.state.perPage);
+        
+        // sort by date 
+        const sortDate = slice.sort((a, b) => {
+            return b.id - a.id;
+        });
+        
+        const postData = sortDate.map((post, index) => {
+            return (<Photo key={index} post={post} index={index} {...this.props} />)
+        });
+        
+        const pageCount =  Math.ceil(posts.length / this.state.perPage);
+        
         return (
             <React.Fragment>
+                <header>
+                    <h1>Our Photowall</h1>
+                </header>
                 <Link to="/addPhoto" className="addIcon"></Link>
                 <div className="photoGrid">
-                    {this.state.postData}
+                    {postData}
                 </div>
                 <div className="pagination-container">
                     <ReactPaginate
@@ -61,7 +82,7 @@ class PhotoContainer extends Component {
                         nextLabel={"next"}
                         breakLabel={"..."}
                         breakClassName={"break-me"}
-                        pageCount={this.state.pageCount}
+                        pageCount={pageCount}
                         onPageChange={this.handlePageClick}
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={5}
@@ -75,9 +96,16 @@ class PhotoContainer extends Component {
 }
 
 
-// make sure to pass the right type 
-PhotoContainer.propTypes = {
-    posts: Proptypes.array.isRequired
+const mapStateToProps = state => {
+    return{
+        posts: state
+    }
 }
 
-export default PhotoContainer;
+const mapDispatchToProps = dispatch => {
+    return{
+        setPosts: posts => dispatch(setPosts(posts))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PhotoContainer);

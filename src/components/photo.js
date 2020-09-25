@@ -10,34 +10,67 @@ import { firestore, convertPostsToMap } from '../firebase/firebase.util';
 class Photo extends Component {
     constructor() {
         super();
+        this.state = {
+            isOpen: true
+        }
     }
 
-    onRemovePhoto = (postId) => {
+    onRemovePhoto = (docId) => {
+        console.log('[onRemovePhoto]', docId)
+
+        const { removePhotoPost, history } = this.props;
+    //    console.log(docId);
+
+        firestore.collection('posts').doc(docId).delete()
+            .then((response) => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+
+        removePhotoPost(docId);
         
-        const { removePhotoPost } = this.props; 
+        history.push("/");
+    }
 
-        removePhotoPost(postId);
-
-        this.props.history.push("/");
+    onPhotoView = (id) => {
+        const { post } = this.props;
+        this.setState({
+            isOpen: false
+        })
     }
 
     render() {
-      //  console.log(this.props);
-        const { post, index, history, removePost } = this.props; 
+        //  console.log(this.props);
+        const { post, index, history, removePost } = this.props;
         
         return (
-            <figure>
-                <Link to={`/single/${post.id}`}>
-                    <img src={post.imageLink} alt={post.description} className="photo" />
-                </Link>
-                <div className="photo-content">
-                    <h2>{post.description}</h2>
-                    <div className="photo-buttons">
-                        <button type="button" className="remove-btn" onClick={() => this.onRemovePhoto(post.id)} >Remove</button>
-                    </div>
-                    <p>{post.postedDate}</p>
-                </div>
-            </figure>
+            <React.Fragment>
+                {
+                    this.state.isOpen ? (
+                        <figure>
+                            <a href={this.state.isOpen ? `#${post.id}` : ''}>
+                            <img src={post.imageLink} alt={post.description} className="photo"
+                                onClick={() => this.onPhotoView(post.id)} />
+                            </a>
+                            <div className="photo-content">
+                                <h2>{post.description}</h2>
+                                <div className="photo-buttons">
+                                    <button type="button" className="remove-btn" onClick={() => this.onRemovePhoto(post.id)} >Remove</button>
+                                </div>
+                                <p>{post.postedDate}</p>
+                            </div>
+                        </figure>
+                    ) : <div className="overlay">
+                            <a href={this.state.isOpen ? `#${post.id}` : ''} className="closeBtn" onClick={() => this.setState({isOpen: true})}>&times;</a>
+                            <div className="overlay-content">
+                                <img src={post.imageLink} alt={post.description} className="overlay-img" />
+                            </div>
+                        </div>
+                }
+            </React.Fragment>
         )
     }
 }
@@ -58,4 +91,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(Photo));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Photo));
