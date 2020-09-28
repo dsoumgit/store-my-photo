@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './photo.style.css';
+import Slide from 'react-reveal/Slide';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { removePost, removePhotoPost, loadPosts } from '../redux/actions/postsActions';
-import { firestore, convertPostsToMap } from '../firebase/firebase.util';
+import { removePhotoPost } from '../redux/actions/postsActions';
+import { firestore } from '../firebase/firebase.util';
 
 class Photo extends Component {
     constructor() {
@@ -16,10 +16,7 @@ class Photo extends Component {
     }
 
     onRemovePhoto = (docId) => {
-        console.log('[onRemovePhoto]', docId)
-
         const { removePhotoPost, history } = this.props;
-    //    console.log(docId);
 
         firestore.collection('posts').doc(docId).delete()
             .then((response) => {
@@ -31,11 +28,11 @@ class Photo extends Component {
 
 
         removePhotoPost(docId);
-        
+
         history.push("/");
     }
 
-    onPhotoView = (id) => {
+    onPhotoView = () => {
         const { post } = this.props;
         this.setState({
             isOpen: false
@@ -45,26 +42,28 @@ class Photo extends Component {
     render() {
         //  console.log(this.props);
         const { post, index, history, removePost } = this.props;
-        
+
         return (
             <React.Fragment>
                 {
                     this.state.isOpen ? (
-                        <figure>
-                            <a href={this.state.isOpen ? `#${post.id}` : ''}>
-                            <img src={post.imageLink} alt={post.description} className="photo"
-                                onClick={() => this.onPhotoView(post.id)} />
-                            </a>
-                            <div className="photo-content">
-                                <h2>{post.description}</h2>
-                                <div className="photo-buttons">
-                                    <button type="button" className="remove-btn" onClick={() => this.onRemovePhoto(post.id)} >Remove</button>
+                        <Slide left>
+                            <figure>
+                                <a href={this.state.isOpen ? `#${post.id}` : ''}>
+                                    <img src={post.imageLink} alt={post.description} className="photo"
+                                        onClick={() => this.onPhotoView()} />
+                                </a>
+                                <div className="photo-content">
+                                    <h2>{post.description}</h2>
+                                    <div className="photo-buttons">
+                                        <button type="button" className="remove-btn" onClick={() => this.onRemovePhoto(post.id)} >Remove</button>
+                                    </div>
+                                    <p>{post.postedDate}</p>
                                 </div>
-                                <p>{post.postedDate}</p>
-                            </div>
-                        </figure>
+                            </figure>
+                        </Slide>
                     ) : <div className="overlay">
-                            <a href={this.state.isOpen ? `#${post.id}` : ''} className="closeBtn" onClick={() => this.setState({isOpen: true})}>&times;</a>
+                            <a href={this.state.isOpen ? `#${post.id}` : ''} className="closeBtn" onClick={() => this.setState({ isOpen: true })}>&times;</a>
                             <div className="overlay-content">
                                 <img src={post.imageLink} alt={post.description} className="overlay-img" />
                             </div>
