@@ -1,5 +1,7 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import './addPhoto.style.css';
+import Fade from 'react-reveal/Fade';
+import Slide from 'react-reveal/Slide';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { firestore } from '../firebase/firebase.util';
@@ -57,7 +59,7 @@ const AddPhoto = (props) => {
             addPost(post);
             // route to home page
             props.history.push("/");
-        } 
+        }
 
         return setIsRequired(true);
     }
@@ -65,30 +67,38 @@ const AddPhoto = (props) => {
     return (
         <div className="add-photo">
             <header>
-                <h1>New Photo</h1>
+                <Fade>
+                    <h1>New Photo</h1>
+                </Fade>
             </header>
             <div className="addPhoto-form">
-                <form onSubmit={onPostSubmit}>
-                    <label htmlFor="link" className="label">Link:</label>
-                    <input
-                        type="text"
-                        name="link"
-                        placeholder={link}
-                        onChange={onLinkChange}
-                        className="textInput"></input>
-                    {isRequired ? <p style={{color: 'red'}}>Required</p> : ''}
-                    <label htmlFor="description" className="label">Description:</label>
-                    <input
-                        type="text"
-                        name="description"
-                        placeholder={description}
-                        onChange={evt => setDescription(evt.target.value)}
-                        className="textInput"></input>
 
+                <form onSubmit={onPostSubmit}>
+                    <Fade><label htmlFor="link" className="label">Link:</label></Fade>
+                    <Fade top>
+                        <input
+                            type="text"
+                            name="link"
+                            placeholder={link}
+                            onChange={onLinkChange}
+                            className="textInput"></input>
+                    </Fade>
+                    {isRequired ? <p style={{ color: 'red' }}>Required</p> : ''}
+                    <Fade><label htmlFor="description" className="label">Description:</label></Fade>
+                    <Fade top>
+                        <input
+                            type="text"
+                            name="description"
+                            placeholder={description}
+                            onChange={evt => setDescription(evt.target.value)}
+                            className="textInput"></input>
+                    </Fade>
                     {/* <input type="file" id="file" /> */}
                     <div className="">
-                        <input type="submit" value="Add" />
-                        <input type="button" value="Cancel" onClick={() => props.history.push("/")} />
+                        <Slide left>
+                            <input type="submit" value="Add" />
+                            <input type="button" value="Cancel" onClick={() => props.history.push("/")} />
+                        </Slide>
                     </div>
                 </form>
             </div>

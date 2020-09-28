@@ -1,40 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 //import './App.css';
-import { SpinnerStyle } from './App.style';
+import { H1Style, SpinnerStyle, SpinnerSpan, FooterContainer, FooterStyle } from './App.style';
 import { Route, Switch } from 'react-router-dom';
 
 import { firestore, convertPostsToMap } from './firebase/firebase.util';
 import PhotoContainer from './components/photoContainer';
 import AddPhoto from './components/addPhoto';
+import SinglePhoto from './components/singlePhoto';
 import NotFound from './components/notFound';
 import { connect } from 'react-redux';
 import { setPosts } from './redux/actions/postsActions';
 
-// use useEffect in React hooks to do a server request in ComponentDidMount()
-const App = (props) => {
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      isLoading: true
+    }
+  }
 
-  const [ isLoading, setIsLoading ] = useState(true);
-
-  const { posts } = props; 
-
-  useEffect(() => {
-
-    const { setPosts } = props; 
+  componentDidMount() {
+    const { setPosts } = this.props;
 
     const posts = firestore.collection('posts');
 
-        posts.onSnapshot(async snapshot => {
-          const postsMap = convertPostsToMap(snapshot);
-          setPosts(postsMap);
-          // set loading 
-          setIsLoading(false);
-         });
-  }, []);
+    posts.onSnapshot(async snapshot => {
+      const postsMap = convertPostsToMap(snapshot);
+      
+      setPosts(postsMap);
 
-  return(
-    <React.Fragment>
-         <Switch>
-           <Route exact path="/" render={() =>
+      this.setState({
+        isLoading: false
+      })
+    });
+  }
+
+  render() {
+    const { posts } = this.props;
+    const { isLoading } = this.state;
+
+    return (
+      <React.Fragment>
+        <Switch>
+          <Route exact path="/" render={() =>
             isLoading ? <SpinnerStyle></SpinnerStyle>
               : (
                 <PhotoContainer {...posts } />
@@ -42,11 +50,15 @@ const App = (props) => {
           <Route path="/addPhoto" render={() => (
             <AddPhoto {...posts} />
           )} />
+          {/* <Route path="/single/:id" render={(params) => (
+            <SinglePhoto {...this.props} {...params} />
+          )} /> */}
           <Route path="*" exact={true} component={NotFound} />
         </Switch>
         
       </React.Fragment>
-  )
+    )
+  }
 }
 
 const mapStateToProps = state => ({
